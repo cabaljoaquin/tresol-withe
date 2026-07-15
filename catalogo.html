@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Productos — TRESOL® Superficie Sólida</title>
+  <meta name="description" content="Catálogo completo Tresol: placas, piletas (bachas) de baño, cocina y sanitarias, bases de ducha, tapas de mesa y mesadas a medida. Filtrá por tipo, instalación, medida y color.">
+  <link rel="canonical" href="https://www.tresol.com.ar/catalogo">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230D0E10'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial' font-weight='700' font-size='17' fill='%23C9A26B'%3ET%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <div id="chrome-header"></div>
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Migas de pan">
+          <a href="index.html">Inicio</a><span class="sep">/</span><span aria-current="page">Catálogo</span>
+        </nav>
+        <span class="eyebrow">Catálogo</span>
+        <h1 id="catTitle">Todos los productos</h1>
+        <p class="lead" id="catDesc">Todo se fabrica a pedido en superficie sólida Tresol®. Elegí una categoría, afiná con filtros y agregá a tu solicitud de presupuesto.</p>
+      </div>
+    </section>
+
+    <section class="section--tight">
+      <div class="container">
+        <!-- Chips de categoría -->
+        <div class="subcat-tabs" id="catChips" role="tablist" aria-label="Categorías"></div>
+        <!-- Tabs de subcategoría -->
+        <div class="subcat-tabs" id="subTabs" role="tablist" aria-label="Subcategorías"></div>
+
+        <div class="catalog-layout">
+          <!-- Filtros -->
+          <aside class="filters" id="filtersPanel" aria-label="Filtros de productos">
+            <h2>Filtrar <button type="button" id="clearFilters">Limpiar todo</button></h2>
+            <div id="filtersBody"></div>
+          </aside>
+
+          <!-- Resultados -->
+          <div>
+            <div class="catalog-toolbar">
+              <p class="catalog-count" id="catCount" role="status"></p>
+              <div style="display:flex; gap:.7rem; align-items:center;">
+                <button class="btn btn--dark btn--sm filters-toggle" id="filtersToggle" aria-expanded="false">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M7 12h10m-7 6h4"/></svg>
+                  Filtros
+                </button>
+                <label class="visually-hidden" for="sortSelect">Ordenar por</label>
+                <select id="sortSelect" style="background:var(--bg-3); border:1px solid var(--line-strong); border-radius:999px; padding:.5rem 1.1rem; font-size:.85rem; color:var(--text);">
+                  <option value="relevancia">Destacados primero</option>
+                  <option value="precio-asc">Menor precio</option>
+                  <option value="precio-desc">Mayor precio</option>
+                  <option value="nombre">Nombre A–Z</option>
+                </select>
+              </div>
+            </div>
+            <div class="prod-grid" id="prodGrid"></div>
+            <div class="empty-state" id="emptyState" hidden>
+              <h3>No encontramos productos con esos filtros</h3>
+              <p>Probá quitando algún filtro — o contanos qué buscás y lo fabricamos a medida.</p>
+              <a class="btn btn--wa" href="https://wa.me/5493517540162?text=Hola%20Tresol!%20Busco%20un%20producto%20a%20medida." target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="chrome-footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/catalogo.js"></script>
+</body>
+</html>
