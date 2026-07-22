@@ -27,8 +27,39 @@ const isLight = hex => {
 /* ============================================================
    VISUALES SVG — representaciones estilizadas del producto.
    (En producción se reemplazan por fotografía real; ver README.)
+
+   Paleta: se lee de los tokens CSS para que styles.css siga siendo la única
+   fuente de verdad del tema. Memoizada (el catálogo genera decenas de escenas)
+   y con fallbacks por si un visual se generara antes de que resuelva la hoja
+   de estilo. planoSVG() ya estaba en paleta clara y es el patrón de destino.
    ============================================================ */
 let __svgUid = 0;
+
+let __pal = null;
+function pal() {
+  if (__pal) return __pal;
+  const cs = getComputedStyle(document.documentElement);
+  const t = (name, fallback) => cs.getPropertyValue(name).trim() || fallback;
+  return (__pal = {
+    scene: t('--bg-2', '#F7F7F5'),      // fondo de escena, arriba
+    scene2: t('--bg-3', '#F1F1EF'),     // fondo de escena, abajo
+    ink: t('--text', '#14213F'),
+    navy: t('--navy', '#142142'),
+    accent: t('--accent', '#C9A26B'),
+    metal: '#8A8F99',                   // grifería: objeto, no token de tema
+    wall: '#E4E3DF',                    // pared/mueble de fondo
+    wallDeep: '#D6D5D0',
+    floor: '#EAE9E5'
+  });
+}
+
+/* Contorno del producto. Adaptativo como speckles(): sobre escena clara un
+   producto claro necesita línea oscura, y uno oscuro sigue leyendo mejor con
+   el reflejo claro que ya tenía. */
+const edgeStroke = (hex, strong = false) =>
+  isLight(hex)
+    ? `rgba(20,33,66,${strong ? .38 : .26})`
+    : `rgba(255,255,255,${strong ? .42 : .26})`;
 
 function speckles(hex, n, seedOffset = 0) {
   // Partículas deterministas (sin Math.random para consistencia)
@@ -52,10 +83,10 @@ function sceneDefs(uid, hex) {
   const lite = shade(hex, .22), dark = shade(hex, -.18), darker = shade(hex, -.38);
   return `<defs>
     <linearGradient id="bg${uid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#25262C"/><stop offset="1" stop-color="#191A1F"/>
+      <stop offset="0" stop-color="${pal().scene}"/><stop offset="1" stop-color="${pal().scene2}"/>
     </linearGradient>
     <radialGradient id="glow${uid}" cx=".72" cy=".2" r=".9">
-      <stop offset="0" stop-color="rgba(214,183,138,.16)"/><stop offset=".6" stop-color="rgba(214,183,138,0)"/>
+      <stop offset="0" stop-color="rgba(201,162,107,.10)"/><stop offset=".6" stop-color="rgba(201,162,107,0)"/>
     </radialGradient>
     <linearGradient id="surf${uid}" x1="0" y1="0" x2=".8" y2="1">
       <stop offset="0" stop-color="${lite}"/><stop offset=".5" stop-color="${hex}"/><stop offset="1" stop-color="${dark}"/>
@@ -71,13 +102,14 @@ function sceneDefs(uid, hex) {
 
 function sceneBg(uid) {
   return `<rect width="400" height="300" fill="url(#bg${uid})"/><rect width="400" height="300" fill="url(#glow${uid})"/>
-  <ellipse cx="200" cy="262" rx="150" ry="16" fill="#000" opacity=".35"/>`;
+  <ellipse cx="200" cy="262" rx="150" ry="16" fill="${pal().navy}" opacity=".10"/>`;
 }
 
 function basinShape(p, uid, hex, cx = 200, cy = 160, scale = 1) {
   const color = TRESOL.getColor ? null : null;
   const spk = (TRESOL.colores.find(c => c.hex === hex) || {}).textura ? speckles(hex, 14, __svgUid) : '';
-  const drain = (dx, dy) => `<circle cx="${dx}" cy="${dy}" r="9" fill="url(#edge${uid})"/><circle cx="${dx}" cy="${dy}" r="5.5" fill="#101114"/><circle cx="${dx - 1.5}" cy="${dy - 1.5}" r="1.2" fill="rgba(255,255,255,.35)"/>`;
+  // El desagüe es un hueco: se mantiene oscuro (deriva de --text) en cualquier tema.
+  const drain = (dx, dy) => `<circle cx="${dx}" cy="${dy}" r="9" fill="url(#edge${uid})"/><circle cx="${dx}" cy="${dy}" r="5.5" fill="${pal().ink}"/><circle cx="${dx - 1.5}" cy="${dy - 1.5}" r="1.2" fill="rgba(255,255,255,.45)"/>`;
   let s = '';
   const w = 250 * scale, h = 170 * scale;
   if (p.doble) {
@@ -117,16 +149,16 @@ function productVisual(p, colorId, view = 'main') {
       body = `<rect width="400" height="300" fill="url(#surf${uid})"/>${spk}
       <circle cx="200" cy="150" r="64" fill="url(#cav${uid})"/>
       <circle cx="200" cy="150" r="34" fill="url(#edge${uid})"/>
-      <circle cx="200" cy="150" r="22" fill="#0F1013"/>
-      <path d="M186 136 a20 20 0 0 1 22 -4" stroke="rgba(255,255,255,.5)" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+      <circle cx="200" cy="150" r="22" fill="${pal().ink}"/>
+      <path d="M186 136 a20 20 0 0 1 22 -4" stroke="${edgeStroke(hex, true)}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
     } else if (view === 'ambiente') {
       body = `${sceneBg(uid)}
-      <rect x="0" y="196" width="400" height="104" fill="#101114"/>
+      <rect x="0" y="196" width="400" height="104" fill="${pal().wallDeep}"/>
       <rect x="20" y="176" width="360" height="26" rx="6" fill="url(#surf${uid})"/>${spk}
       <rect x="20" y="170" width="360" height="8" rx="4" fill="${shade(hex, .3)}" opacity=".8"/>
       <ellipse cx="200" cy="189" rx="82" ry="9" fill="url(#cav${uid})"/>
-      <rect x="188" y="120" width="7" height="52" rx="3.5" fill="#3A3D44"/>
-      <path d="M191 120 h30 a8 8 0 0 1 8 8 v6" stroke="#3A3D44" stroke-width="7" fill="none" stroke-linecap="round"/>`;
+      <rect x="188" y="120" width="7" height="52" rx="3.5" fill="${pal().metal}"/>
+      <path d="M191 120 h30 a8 8 0 0 1 8 8 v6" stroke="${pal().metal}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
     } else {
       body = `${sceneBg(uid)}${basinShape(p, uid, hex, 200, 152, view === 'top' ? 1 : .92)}`;
     }
@@ -136,22 +168,22 @@ function productVisual(p, colorId, view = 'main') {
       body = `<rect width="400" height="300" fill="url(#surf${uid})"/>${spk}
       ${Array.from({ length: 7 }, (_, i) => `<rect x="${60 + i * 42}" y="60" width="5" height="180" rx="2.5" fill="${shade(hex, -.22)}" opacity=".7"/>`).join('')}
       <rect x="290" y="118" width="64" height="64" rx="8" fill="url(#edge${uid})"/>
-      <rect x="298" y="126" width="48" height="48" rx="5" fill="#0F1013"/>
-      ${Array.from({ length: 4 }, (_, i) => `<rect x="${302 + i * 11}" y="130" width="4" height="40" rx="2" fill="#2A2C31"/>`).join('')}`;
+      <rect x="298" y="126" width="48" height="48" rx="5" fill="${pal().ink}"/>
+      ${Array.from({ length: 4 }, (_, i) => `<rect x="${302 + i * 11}" y="130" width="4" height="40" rx="2" fill="${pal().metal}"/>`).join('')}`;
     } else if (view === 'ambiente') {
       body = `${sceneBg(uid)}
-      <rect x="40" y="30" width="320" height="180" rx="4" fill="#1D1F24"/>
-      <rect x="52" y="42" width="296" height="156" rx="3" fill="#26282E" opacity=".7"/>
+      <rect x="40" y="30" width="320" height="180" rx="4" fill="${pal().wall}"/>
+      <rect x="52" y="42" width="296" height="156" rx="3" fill="${pal().wallDeep}" opacity=".7"/>
       <rect x="60" y="212" width="280" height="34" rx="9" fill="url(#surf${uid})"/>${spk}
       <rect x="76" y="222" width="248" height="4" rx="2" fill="${shade(hex, -.25)}" opacity=".6"/>
-      <circle cx="200" cy="70" r="13" fill="#3A3D44"/><rect x="197" y="83" width="6" height="26" fill="#3A3D44"/>`;
+      <circle cx="200" cy="70" r="13" fill="${pal().metal}"/><rect x="197" y="83" width="6" height="26" fill="${pal().metal}"/>`;
     } else {
       const marco = p.id === 'base-oxford' ? `<rect x="76" y="76" width="248" height="148" rx="12" fill="none" stroke="${shade(hex, -.25)}" stroke-width="4" opacity=".8"/>` : '';
       const texture = p.id === 'base-chelsea' ? Array.from({ length: 6 }, (_, i) => `<rect x="90" y="${92 + i * 20}" width="180" height="4" rx="2" fill="${shade(hex, -.2)}" opacity=".55"/>`).join('') : '';
       body = `${sceneBg(uid)}
       <rect x="62" y="62" width="276" height="176" rx="16" fill="url(#surf${uid})"/>${spk}${marco}${texture}
       <rect x="286" y="122" width="34" height="56" rx="7" fill="url(#edge${uid})"/>
-      ${Array.from({ length: 4 }, (_, i) => `<rect x="${291 + i * 7}" y="128" width="3" height="44" rx="1.5" fill="#101114"/>`).join('')}`;
+      ${Array.from({ length: 4 }, (_, i) => `<rect x="${291 + i * 7}" y="128" width="3" height="44" rx="1.5" fill="${pal().ink}"/>`).join('')}`;
     }
   }
   else if (p.tipo === 'tapa') {
@@ -160,14 +192,14 @@ function productVisual(p, colorId, view = 'main') {
       body = `${sceneBg(uid)}
       <ellipse cx="200" cy="160" rx="128" ry="96" fill="${edge}"/>
       <ellipse cx="200" cy="150" rx="128" ry="96" fill="url(#surf${uid})"/>${spk}
-      <ellipse cx="200" cy="150" rx="128" ry="96" fill="none" stroke="rgba(255,255,255,.28)" stroke-width="1.4"/>
-      <path d="M96 120 a 128 96 0 0 1 90 -60" stroke="rgba(255,255,255,.45)" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+      <ellipse cx="200" cy="150" rx="128" ry="96" fill="none" stroke="${edgeStroke(hex)}" stroke-width="1.4"/>
+      <path d="M96 120 a 128 96 0 0 1 90 -60" stroke="${edgeStroke(hex, true)}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
     } else {
       const w = p.forma === 'cuadrada' ? 200 : 270, h = p.forma === 'cuadrada' ? 160 : 150;
       body = `${sceneBg(uid)}
       <rect x="${200 - w / 2}" y="${160 - h / 2 + 12}" width="${w}" height="${h}" rx="12" fill="${edge}"/>
       <rect x="${200 - w / 2}" y="${160 - h / 2}" width="${w}" height="${h}" rx="12" fill="url(#surf${uid})"/>${spk}
-      <rect x="${200 - w / 2}" y="${160 - h / 2}" width="${w}" height="${h}" rx="12" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.4"/>`;
+      <rect x="${200 - w / 2}" y="${160 - h / 2}" width="${w}" height="${h}" rx="12" fill="none" stroke="${edgeStroke(hex)}" stroke-width="1.4"/>`;
     }
   }
   else if (p.tipo === 'placa') {
@@ -175,7 +207,7 @@ function productVisual(p, colorId, view = 'main') {
     <g transform="translate(200 158)">
       <polygon points="-150,44 -66,-64 156,-64 72,44" fill="${shade(hex, -.32)}"/>
       <polygon points="-150,36 -66,-72 156,-72 72,36" fill="url(#surf${uid})"/>${color.textura ? `<g transform="translate(-160 -110)">${speckles(hex, 18, uid)}</g>` : ''}
-      <polygon points="-150,36 -66,-72 156,-72 72,36" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.2"/>
+      <polygon points="-150,36 -66,-72 156,-72 72,36" fill="none" stroke="${edgeStroke(hex)}" stroke-width="1.2"/>
       <polygon points="-150,36 72,36 72,44 -150,44" fill="${shade(hex, -.4)}"/>
       <polygon points="-64,-84 158,-84 152,-78 -62,-78" fill="${shade(hex, .1)}" opacity=".55"/>
     </g>`;
@@ -185,12 +217,11 @@ function productVisual(p, colorId, view = 'main') {
     <rect x="30" y="96" width="340" height="12" rx="4" fill="${shade(hex, .15)}"/>
     <rect x="30" y="108" width="340" height="26" rx="5" fill="url(#surf${uid})"/>${spk}
     <rect x="30" y="70" width="340" height="8" rx="4" fill="${shade(hex, .05)}" opacity=".7"/>
-    <rect x="30" y="78" width="340" height="18" fill="#17181C" opacity="0"/>
     <ellipse cx="255" cy="121" rx="62" ry="8" fill="url(#cav${uid})"/>
-    <rect x="30" y="134" width="340" height="110" fill="#101114"/>
-    <rect x="46" y="134" width="2" height="110" fill="#1E2025"/><rect x="352" y="134" width="2" height="110" fill="#1E2025"/>
-    <rect x="120" y="60" width="6" height="52" rx="3" fill="#3A3D44"/>
-    <path d="M123 60 h26 a7 7 0 0 1 7 7 v8" stroke="#3A3D44" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+    <rect x="30" y="134" width="340" height="110" fill="${pal().wallDeep}"/>
+    <rect x="46" y="134" width="2" height="110" fill="${pal().wall}"/><rect x="352" y="134" width="2" height="110" fill="${pal().wall}"/>
+    <rect x="120" y="60" width="6" height="52" rx="3" fill="${pal().metal}"/>
+    <path d="M123 60 h26 a7 7 0 0 1 7 7 v8" stroke="${pal().metal}" stroke-width="6" fill="none" stroke-linecap="round"/>`;
   }
   return svgWrap(body, defs);
 }
@@ -201,13 +232,13 @@ function projectVisual(proj) {
   const hex = proj.color || '#C9A26B';
   const defs = sceneDefs(uid, hex);
   return svgWrap(`${sceneBg(uid)}
-    <rect x="0" y="210" width="400" height="90" fill="#101114"/>
+    <rect x="0" y="210" width="400" height="90" fill="${pal().floor}"/>
     <rect x="28" y="150" width="344" height="62" rx="8" fill="url(#surf${uid})"/>
     <rect x="28" y="140" width="344" height="12" rx="6" fill="${shade(hex, .2)}"/>
     <rect x="48" y="52" width="120" height="70" rx="8" fill="${shade(hex, -.35)}" opacity=".55"/>
     <rect x="188" y="38" width="90" height="84" rx="8" fill="${shade(hex, -.2)}" opacity=".4"/>
     <rect x="296" y="66" width="70" height="56" rx="8" fill="${shade(hex, .1)}" opacity=".35"/>
-    <ellipse cx="200" cy="216" rx="140" ry="8" fill="#000" opacity=".4"/>`, defs);
+    <ellipse cx="200" cy="216" rx="140" ry="8" fill="${pal().navy}" opacity=".12"/>`, defs);
 }
 
 /* Plano técnico (dibujo acotado) */
@@ -324,7 +355,7 @@ function buildHeader() {
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
       <a class="brand" href="index.html" aria-label="Tresol — inicio">
-        <span class="brand-logo">TRESOL<span>.</span></span>
+        <img class="brand-img" src="assets/img/logo-wordmark.png" alt="TRESOL">
         <span class="brand-tag">Superficie Sólida</span>
       </a>
       <nav class="main-nav" aria-label="Navegación principal">
@@ -394,7 +425,7 @@ function buildFooter() {
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <span class="brand-logo">TRESOL<span>.</span></span>
+          <img class="footer-logo" src="assets/img/logoN.png" alt="TRESOL — Solid Surface">
           <p>Primera fabricante de superficie sólida en Argentina. Plantas en Argentina y Brasil, abasteciendo a toda Latinoamérica. Calidad certificada ISO 9001.</p>
           <div class="footer-social">
             <a href="${c.instagram}" target="_blank" rel="noopener" aria-label="Instagram de Tresol">${ICONS.ig}</a>
@@ -468,17 +499,60 @@ function buildFooter() {
   </div>`;
 }
 
+/* ============================================================
+   ESTADO DE UI — bloqueo de scroll y sincronización de viewport
+   ------------------------------------------------------------
+   El bloqueo de scroll del body es un recurso compartido entre el nav
+   móvil, el buscador y el modal. Cada cierre lo reseteaba a '' sin mirar
+   quién más lo tenía tomado: abrir nav → abrir buscador → cerrar buscador
+   devolvía el scroll con el nav todavía encima. Se lleva un set de dueños
+   y el body solo se libera cuando queda vacío.
+   ============================================================ */
+const scrollLockOwners = new Set();
+function lockScroll(owner) {
+  scrollLockOwners.add(owner);
+  document.body.style.overflow = 'hidden';
+}
+function unlockScroll(owner) {
+  scrollLockOwners.delete(owner);
+  if (!scrollLockOwners.size) document.body.style.overflow = '';
+}
+
+/* Umbral donde el nav horizontal reemplaza a la hamburguesa. Tiene que
+   coincidir con los @media de .main-nav (styles.css:190) y .nav-toggle
+   (styles.css:254). Si se cambia acá, cambiarlo allá. */
+const NAV_BP = 1024;
+
+function closeAllMegas() {
+  document.querySelectorAll('.mega').forEach(m => m.classList.remove('is-open'));
+  document.querySelectorAll('[data-mega]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+}
+
+function setMobileNav(open) {
+  const nav = document.getElementById('mobileNav');
+  const toggle = document.getElementById('navToggle');
+  if (!nav || !toggle) return;
+  nav.classList.toggle('is-open', open);
+  toggle.setAttribute('aria-expanded', String(open));
+  toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  toggle.innerHTML = open ? ICONS.close : ICONS.menu;
+  if (open) lockScroll('nav'); else unlockScroll('nav');
+}
+const closeMobileNav = () => setMobileNav(false);
+const isMobileNavOpen = () => !!document.getElementById('mobileNav')?.classList.contains('is-open');
+
 /* ---------- Modal genérico ---------- */
 function openModal(title, bodyHTML) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').innerHTML = bodyHTML;
   document.getElementById('modalBackdrop').classList.add('is-open');
-  document.body.style.overflow = 'hidden';
+  lockScroll('modal');
 }
 function closeModal() {
-  document.getElementById('modalBackdrop').classList.remove('is-open');
-  document.body.style.overflow = '';
+  document.getElementById('modalBackdrop')?.classList.remove('is-open');
+  unlockScroll('modal');
 }
+const isModalOpen = () => !!document.getElementById('modalBackdrop')?.classList.contains('is-open');
 
 /* ---------- Toast ---------- */
 let toastTimer;
@@ -492,6 +566,21 @@ function showToast(msg, showLink = true) {
 }
 
 /* ---------- Buscador ---------- */
+function openSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  if (!overlay) return;
+  overlay.classList.add('is-open');
+  lockScroll('search');
+  setTimeout(() => document.getElementById('searchInput')?.focus(), 60);
+}
+function closeSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('is-open');
+  unlockScroll('search');
+}
+const isSearchOpen = () => !!document.getElementById('searchOverlay')?.classList.contains('is-open');
+
 function normalizar(s) {
   return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
@@ -557,41 +646,54 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       const mega = document.getElementById(btn.dataset.mega);
       const wasOpen = mega.classList.contains('is-open');
-      document.querySelectorAll('.mega').forEach(m => m.classList.remove('is-open'));
-      document.querySelectorAll('[data-mega]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+      closeAllMegas();
       if (!wasOpen) { mega.classList.add('is-open'); btn.setAttribute('aria-expanded', 'true'); }
     });
   });
   document.addEventListener('click', e => {
-    if (!e.target.closest('.mega') && !e.target.closest('[data-mega]')) {
-      document.querySelectorAll('.mega').forEach(m => m.classList.remove('is-open'));
-      document.querySelectorAll('[data-mega]').forEach(b => b.setAttribute('aria-expanded', 'false'));
-    }
+    if (!e.target.closest('.mega') && !e.target.closest('[data-mega]')) closeAllMegas();
   });
 
   // Nav móvil
   const navToggle = document.getElementById('navToggle');
   const mobileNav = document.getElementById('mobileNav');
-  navToggle?.addEventListener('click', () => {
-    const open = mobileNav.classList.toggle('is-open');
-    navToggle.setAttribute('aria-expanded', open);
-    navToggle.innerHTML = open ? ICONS.close : ICONS.menu;
-    document.body.style.overflow = open ? 'hidden' : '';
-  });
+  navToggle?.addEventListener('click', () => setMobileNav(!isMobileNavOpen()));
   document.querySelectorAll('[data-mobile-sub]').forEach(btn => {
     btn.addEventListener('click', () => btn.closest('.mobile-nav-group').classList.toggle('is-open'));
+  });
+  // Los links del submenú apuntan a anclas (material.html#ventajas). Desde la
+  // propia página eso es un cambio de hash, no una recarga: sin esto el nav
+  // queda abierto tapando la sección a la que el usuario acaba de saltar.
+  mobileNav?.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a) return;
+    const url = new URL(a.getAttribute('href'), location.href);
+    if (url.hash && url.pathname === location.pathname && url.search === location.search) closeMobileNav();
+  });
+
+  /* Punto único de sincronización al cruzar el umbral del nav.
+     matchMedia y no resize: dispara una sola vez en el cruce en vez de decenas
+     de veces por segundo durante el arrastre, así que no necesita debounce ni
+     recordar el ancho anterior para saber si cruzó. */
+  matchMedia(`(min-width: ${NAV_BP}px)`).addEventListener('change', e => {
+    if (e.matches) closeMobileNav();  // la hamburguesa desaparece por CSS: el nav quedaría sin control para cerrarlo
+    else closeAllMegas();             // los mega-menús no existen por debajo del umbral
   });
 
   // Buscador
   const overlay = document.getElementById('searchOverlay');
   const input = document.getElementById('searchInput');
-  const openSearch = () => { overlay.classList.add('is-open'); document.body.style.overflow = 'hidden'; setTimeout(() => input.focus(), 60); };
-  const closeSearch = () => { overlay.classList.remove('is-open'); document.body.style.overflow = ''; };
   document.getElementById('searchBtn')?.addEventListener('click', openSearch);
   overlay?.addEventListener('click', e => { if (e.target === overlay) closeSearch(); });
   input?.addEventListener('input', () => renderSearchResults(buscarProductos(input.value), input.value));
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeSearch(); closeModal(); }
+    // Cierra solo lo que está abierto, en orden de prioridad: cerrar a ciegas
+    // liberaba el lock de scroll de una capa que seguía visible.
+    if (e.key === 'Escape') {
+      if (isModalOpen()) closeModal();
+      else if (isSearchOpen()) closeSearch();
+      else if (isMobileNavOpen()) closeMobileNav();
+    }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); }
   });
 
@@ -606,6 +708,34 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
+
+  // El FAB de WhatsApp se superpone a cualquier botón de WhatsApp a todo el
+  // ancho (mismo destino, misma esquina) mientras ese botón cruza la franja
+  // inferior de la pantalla. Se oculta el FAB mientras alguno está en vista
+  // y reaparece al salir — sin tocar el contenido de la página. rootMargin
+  // negativo abajo: el botón cuenta como "visible" recién al entrar en la
+  // franja donde el FAB fijo realmente se dibuja (58px + 1.4rem de margen).
+  const waButtons = document.querySelectorAll('.btn--wa.btn--block');
+  if (waButtons.length) {
+    const fab = document.querySelector('.wa-fab');
+    const visibles = new Set();
+    const waIo = new IntersectionObserver(entries => {
+      entries.forEach(en => en.isIntersecting ? visibles.add(en.target) : visibles.delete(en.target));
+      fab?.classList.toggle('is-hidden', visibles.size > 0);
+    }, { rootMargin: '0px 0px -80px 0px' });
+    waButtons.forEach(b => waIo.observe(b));
+  }
+
+  // Botones magnéticos (solo puntero fino y sin reduced-motion)
+  if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.btn--lg').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .12}px, ${(e.clientY - r.top - r.height / 2) * .25}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
+  }
 });
 
 /* ---------- Render de card de producto (compartido) ---------- */

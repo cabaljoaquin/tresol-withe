@@ -52,7 +52,7 @@
         const std = productosConColor(c.id);
         const ped = productosAPedido(c.id);
         openModal(c.nombre, `
-          <div style="height:150px; border-radius:14px; background:${c.css}; border:1px solid var(--line-strong); box-shadow: inset 0 2px 12px rgba(0,0,0,.15); margin-bottom:1.2rem;"></div>
+          <div style="height:150px; border-radius:14px; background:${c.css}; border:1px solid var(--line-input); box-shadow: inset 0 2px 12px rgba(20,33,66,.08); margin-bottom:1.2rem;"></div>
           <div class="table-wrap mb-2">
             <table class="spec-table">
               <tr><th scope="row">Serie</th><td>Serie ${esc(s.nombre)}</td></tr>

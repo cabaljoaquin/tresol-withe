@@ -162,7 +162,7 @@
           const col = TRESOL.getColor(k);
           return `<label class="filter-opt">
             <input type="checkbox" data-f="colores" value="${k}" ${state.colores.includes(k) ? 'checked' : ''}>
-            <span class="dot" style="width:15px;height:15px;border-radius:50%;display:inline-block;background:${col.css};border:1px solid rgba(255,255,255,.25)"></span>
+            <span class="dot" style="width:15px;height:15px;border-radius:50%;display:inline-block;background:${col.css};border:1px solid var(--line-input)"></span>
             ${esc(col.nombre)} <span class="f-count">${n}</span>
           </label>`;
         }).join('')}
@@ -254,10 +254,19 @@
     document.getElementById('sortSelect').addEventListener('change', e => { state.sort = e.target.value; renderGrid(); });
     document.getElementById('clearFilters').addEventListener('click', () => resetFilters());
     const ft = document.getElementById('filtersToggle');
+    const panel = document.getElementById('filtersPanel');
     ft.addEventListener('click', () => {
-      const panel = document.getElementById('filtersPanel');
       const open = panel.classList.toggle('is-open');
       ft.setAttribute('aria-expanded', open);
+    });
+
+    /* Por encima del umbral el panel se muestra siempre por CSS (styles.css:678-681)
+       y el botón desaparece: is-open y aria-expanded quedaban stale y volvían a
+       aplicarse al achicar la ventana. Umbral del layout de catálogo, no el del nav. */
+    matchMedia('(min-width: 1024px)').addEventListener('change', e => {
+      if (!e.matches) return;
+      panel.classList.remove('is-open');
+      ft.setAttribute('aria-expanded', 'false');
     });
   });
 })();

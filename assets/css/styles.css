@@ -1,27 +1,101 @@
 /* ============================================================
    TRESOL — Sistema de diseño
-   Dark premium · acento bronce · Outfit + Inter
+   Claro premium · navy protagonista · bronce de acento
+   Outfit + Inter
+   ------------------------------------------------------------
+   Regla del bronce: --accent es SUPERFICIE (relleno), nunca texto.
+   Para texto sobre fondo claro se usa --accent-2 (#7C5E2E, AA).
+   ============================================================ */
+
+/* ============================================================
+   ESCALA DE BREAKPOINTS
+   ------------------------------------------------------------
+   Derivada del contenido real (auditoría en cerebro/auditoria-
+   responsive.md), no de una escala estándar de industria. Las custom
+   properties no funcionan dentro de @media, así que estos valores
+   se escriben literales en cada regla — esta tabla es la fuente de
+   verdad para mantenerlos consistentes. Si un componente necesita un
+   corte nuevo, primero ver si entra en uno de estos cinco.
+
+   --bp-sm   640px   2 columnas en contenido angosto:
+                      .form-row, .quote-item (max), .ig-grid (3 col),
+                      .footer-grid (2 col), .bento-grid (2 col)
+   --bp-md   920px   Tablet — más aire, no más columnas todavía:
+                      .brand-img (logo grande), .split (2 col),
+                      .footer-grid (4 col)
+   --bp-lg   980px   Layouts de 2 columnas anchos y grillas completas:
+                      .hero-grid, .hero-visual (max), .pdp-grid,
+                      .bento-grid (12 col), .ig-grid (6 col)
+   --bp-xl   1024px  Nav horizontal reemplaza la hamburguesa; layouts
+                      con sidebar: .main-nav, .mega, .nav-toggle,
+                      .catalog-layout, .filters-toggle, .quote-layout
+   --bp-2xl  1280px  Header en su forma completa: .brand-tag visible
+
+   Excepciones puntuales — no son parte de la escala regular, cada una
+   documentada in situ con el número que la justifica:
+   1160px  .bento-c/d (paso intermedio antes de --bp-xl+ completo)
+   1240px  .btn-quote (el CTA del header necesita 141px más que --bp-2xl)
    ============================================================ */
 
 :root {
-  /* Paleta */
-  --bg: #0D0E10;
-  --bg-2: #121316;
-  --bg-3: #17181C;
-  --panel: #1A1B20;
-  --panel-2: #1F2127;
-  --line: rgba(255, 255, 255, .08);
-  --line-strong: rgba(255, 255, 255, .14);
-  --text: #F2F0EB;
-  --text-2: #B9B7B0;
-  --text-3: #85837D;
-  --accent: #C9A26B;
-  --accent-2: #E3C89A;
-  --accent-dim: rgba(201, 162, 107, .14);
-  --ok: #7FC6A4;
-  --danger: #E0685E;
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, .5);
-  --shadow-md: 0 12px 32px rgba(0, 0, 0, .38);
+  color-scheme: light;
+
+  /* Superficies */
+  --bg: #FFFFFF;
+  --bg-2: #F7F7F5;
+  --bg-3: #F1F1EF;
+  --panel: #FFFFFF;
+  --panel-2: #F6F6F4;
+
+  /* Texto */
+  --text: #14213F;              /* 15.84 sobre --bg · AA */
+  --text-2: #4A5163;            /*  7.93 sobre --bg · AA */
+  --text-3: #6E7482;            /*  4.68 sobre --bg · AA */
+
+  /* Bronce — identidad conservada, roles separados */
+  --accent: #C9A26B;            /* SOLO relleno: como texto da 2.37, falla AA */
+  --accent-lite: #D9B989;       /* stop claro de gradientes de relleno; tinta encima 9.91 */
+  --accent-2: #7C5E2E;          /* bronce de TEXTO: 6.00 sobre --bg, 5.23 sobre --panel-2 */
+  --accent-dim: rgba(201, 162, 107, .16);
+  --ink-on-accent: #17130C;     /* tinta sobre relleno bronce: 7.81 · AA */
+
+  /* Navy — protagonista */
+  --navy: #142142;
+  --navy-2: #22375F;
+  --navy-3: #0F1834;
+  --navy-ink: #0A1022;
+  --navy-dim: rgba(20, 33, 66, .06);
+  --navy-line: rgba(20, 33, 66, .16);
+  --navy-glow: rgba(34, 55, 95, .05);
+
+  /* Líneas — tres niveles: decorativo, marcado, y control (3:1 WCAG 1.4.11) */
+  --line: rgba(20, 33, 66, .10);
+  --line-strong: rgba(20, 33, 66, .18);
+  --line-input: rgba(20, 33, 66, .44);   /* 3.23 sobre --bg — mínimo que cumple 3:1 */
+
+  /* Estado */
+  --ok: #2E7D5B;                /* 5.00 sobre --bg · AA */
+  --ok-dim: rgba(46, 125, 91, .10);
+  --ok-line: rgba(46, 125, 91, .30);
+  --danger: #C0392B;            /* 5.44 sobre --bg · AA */
+
+  /* Superficies compuestas — reemplazan los literales con el fondo incrustado */
+  --glass-bg: rgba(255, 255, 255, .72);
+  --glass-bg-strong: rgba(255, 255, 255, .88);
+  --glass-border: rgba(20, 33, 66, .10);
+  --overlay: rgba(255, 255, 255, .96);   /* mega-menú, nav móvil */
+  --scrim: rgba(20, 33, 66, .34);        /* backdrop de modal y buscador */
+  --sheen: rgba(255, 255, 255, .55);
+  --surface-ph: #F1F1EF;                 /* placeholder detrás de los SVG */
+  --hover-tint: rgba(20, 33, 66, .05);
+
+  /* Sombras — tinte navy, spread bajo, sin negro puro */
+  --shadow-lg: 0 1px 2px rgba(20, 33, 66, .05), 0 6px 16px rgba(20, 33, 66, .07),
+               0 18px 40px rgba(20, 33, 66, .08);
+  --shadow-md: 0 1px 2px rgba(20, 33, 66, .04), 0 4px 12px rgba(20, 33, 66, .06),
+               0 12px 28px rgba(20, 33, 66, .06);
+  --shadow-sm: 0 1px 2px rgba(20, 33, 66, .05), 0 2px 8px rgba(20, 33, 66, .05);
+  --glow-accent: 0 0 0 1px rgba(201, 162, 107, .35), 0 8px 24px rgba(201, 162, 107, .18);
 
   /* Tipografía */
   --font-display: 'Outfit', 'Segoe UI', system-ui, sans-serif;
@@ -47,7 +121,10 @@ body {
   font-size: 16px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* Sin overflow-x: hidden a propósito. Escondía los desbordes en vez de
+     resolverlos: es lo que convirtió el bug de la hamburguesa en "hay que
+     moverse para verla" en lugar de un desborde evidente. Si algo desborda,
+     se arregla la causa. Auditado de 320 a 2560 px — ver cerebro/. */
 }
 img, svg, video { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -55,52 +132,61 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 input, select, textarea { font: inherit; color: inherit; }
 ul, ol { padding: 0; list-style: none; }
 
-::selection { background: var(--accent); color: #14110B; }
+::selection { background: var(--accent); color: var(--ink-on-accent); }
 
 /* Fondo con textura sutil */
 body::before {
   content: '';
   position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    radial-gradient(1100px 500px at 85% -5%, rgba(201, 162, 107, .07), transparent 60%),
-    radial-gradient(900px 600px at -10% 30%, rgba(120, 140, 170, .05), transparent 55%);
+    radial-gradient(1100px 500px at 85% -5%, rgba(201, 162, 107, .05), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, var(--navy-glow), transparent 55%),
+    radial-gradient(1000px 500px at 50% 110%, rgba(20, 33, 66, .04), transparent 60%);
 }
 
 /* ---------- Accesibilidad ---------- */
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 300;
-  background: var(--accent); color: #14110B; padding: .7rem 1.2rem;
+  background: var(--accent); color: var(--ink-on-accent); padding: .7rem 1.2rem;
   border-radius: 0 0 var(--radius-sm) 0; font-weight: 600;
 }
 .skip-link:focus { left: 0; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; border-radius: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   html { scroll-behavior: auto; }
+  .reveal, .reveal--left, .reveal--right, .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
 }
 
 /* ---------- Tipografía ---------- */
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.12; letter-spacing: -.015em; }
-h1 { font-size: clamp(2.4rem, 5.5vw, 4.2rem); }
-h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); }
+h1 { font-size: clamp(2.6rem, 5.8vw, 4.6rem); font-weight: 700; letter-spacing: -.03em; }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.9rem); letter-spacing: -.02em; }
 h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
 p { color: var(--text-2); }
 
 .eyebrow {
   display: inline-flex; align-items: center; gap: .6rem;
   font-size: .78rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 1.1rem;
+  color: var(--accent-2); margin-bottom: 1.1rem;
 }
 .eyebrow::before { content: ''; width: 26px; height: 1px; background: var(--accent); }
 
-.lead { font-size: clamp(1.02rem, 1.5vw, 1.2rem); color: var(--text-2); max-width: 62ch; }
+.lead { font-size: clamp(1.02rem, 1.5vw, 1.2rem); color: var(--text-2); max-width: 62ch; line-height: 1.75; }
 
 /* ---------- Layout ---------- */
 .container { width: min(var(--container), 100% - 2.5rem); margin-inline: auto; }
-.section { padding: clamp(4rem, 8vw, 7rem) 0; }
-.section--tight { padding: clamp(2.5rem, 5vw, 4rem) 0; }
-.section-head { max-width: 720px; margin-bottom: clamp(2rem, 4vw, 3.2rem); }
+/* Las bandas recortan lo que se les escape en horizontal. Lo pide el estado
+   previo de .reveal--left/--right (L967-968): translateX(±36px) contra un
+   gutter de 20px deja 16px fuera del viewport en TODOS los anchos, mientras el
+   elemento no fue revelado. Es `clip` y no `hidden` a propósito: `hidden` crea
+   un contenedor de scroll y rompería el `position: sticky` de .filters,
+   .pdp-gallery y .quote-summary. El gutter del .container deja aire suficiente
+   para que las sombras de .split-visual no se noten recortadas. */
+.section { padding: clamp(4.5rem, 9vw, 8.5rem) 0; overflow-x: clip; }
+.section--tight { padding: clamp(3rem, 6vw, 5rem) 0; overflow-x: clip; }
+.section-head { max-width: 720px; margin-bottom: clamp(2.4rem, 5vw, 4rem); }
 .section-head--center { margin-inline: auto; text-align: center; }
 .section-head--center .eyebrow { justify-content: center; }
 .section-head--center .eyebrow::before { display: none; }
@@ -113,28 +199,35 @@ p { color: var(--text-2); }
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 120;
   height: var(--header-h);
-  background: rgba(13, 14, 16, .72);
+  background: var(--glass-bg);
   backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid transparent;
   transition: border-color .3s, background .3s;
 }
-.site-header.is-scrolled { border-bottom-color: var(--line); background: rgba(13, 14, 16, .88); }
+.site-header.is-scrolled { border-bottom-color: var(--line); background: var(--glass-bg-strong); }
 .header-inner {
   height: 100%; display: flex; align-items: center; gap: 2rem;
   width: min(var(--container), 100% - 2.5rem); margin-inline: auto;
 }
 
-.brand { display: flex; align-items: baseline; gap: .5rem; flex-shrink: 0; }
+.brand { display: flex; align-items: center; gap: .8rem; flex-shrink: 0; }
 .brand-logo {
   font-family: var(--font-display); font-weight: 700; font-size: 1.55rem;
   letter-spacing: .06em; color: var(--text);
 }
-.brand-logo span { color: var(--accent); }
+.brand-logo span { color: var(--accent-2); }
+.brand-img { height: 26px; width: auto; transition: filter .25s, opacity .25s; }
+/* El logo pasó a navy: aclararlo lo desvanecía sobre fondo claro. */
+.brand:hover .brand-img { opacity: .72; }
+@media (min-width: 920px) { .brand-img { height: 30px; } }
 .brand-tag {
   font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-3);
-  display: none;
+  display: none; border-left: 1px solid var(--line-strong); padding-left: .8rem;
 }
-@media (min-width: 900px) { .brand-tag { display: inline; } }
+/* El tag cuesta 148px medidos. A 900 se comía el espacio que necesita el nav
+   horizontal: con el tag el nav pedía 1096px, sin él pide 930 y entra a 1024.
+   Se difiere a 1280, donde ya conviven nav completo + tag + CTA (1197 de 1240). */
+@media (min-width: 1280px) { .brand-tag { display: inline; } }
 
 .main-nav { display: none; align-items: center; gap: .35rem; margin-inline: auto; }
 @media (min-width: 1024px) { .main-nav { display: flex; } }
@@ -144,7 +237,7 @@ p { color: var(--text-2); }
   font-size: .92rem; font-weight: 500; color: var(--text-2);
   transition: color .25s, background .25s;
 }
-.nav-link:hover, .nav-link[aria-expanded="true"], .nav-link.is-active { color: var(--text); background: rgba(255, 255, 255, .06); }
+.nav-link:hover, .nav-link[aria-expanded="true"], .nav-link.is-active { color: var(--text); background: var(--hover-tint); }
 .nav-link .caret { transition: transform .25s; }
 .nav-link[aria-expanded="true"] .caret { transform: rotate(180deg); }
 
@@ -154,22 +247,36 @@ p { color: var(--text-2); }
   width: 42px; height: 42px; border-radius: 999px; color: var(--text-2);
   transition: color .25s, background .25s;
 }
-.icon-btn:hover { color: var(--text); background: rgba(255, 255, 255, .07); }
+.icon-btn:hover { color: var(--text); background: var(--hover-tint); }
 .cart-count {
   position: absolute; top: 3px; right: 1px; min-width: 17px; height: 17px; padding: 0 4px;
-  border-radius: 999px; background: var(--accent); color: #14110B;
+  border-radius: 999px; background: var(--accent); color: var(--ink-on-accent);
   font-size: .66rem; font-weight: 700; display: none; align-items: center; justify-content: center;
 }
 .cart-count.is-visible { display: inline-flex; }
 
-.btn-quote { display: none; }
-@media (min-width: 1160px) { .btn-quote { display: inline-flex; } }
+/* El botón lleva `btn btn--primary btn--sm btn-quote` (main.js:374). Con un
+   selector de clase suelta, `.btn { display: inline-flex }` (L272) empataba en
+   especificidad y ganaba por estar más abajo: el botón se mostraba en TODOS los
+   anchos y empujaba la hamburguesa fuera del viewport en móvil. Se sube la
+   especificidad para que no dependa del orden del archivo. */
+.header-actions .btn-quote { display: none; }
+/* El umbral era 1160 y el header pedía 1178: desbordaba 17px en las 9 páginas
+   entre 1160 y 1279. El CTA cuesta 141px medidos; con él, el header pide 1031
+   (sin brand-tag) y 1197 (con tag, ≥1280). 1240 deja margen en los dos casos. */
+@media (min-width: 1240px) { .header-actions .btn-quote { display: inline-flex; } }
 
-/* Mega menú */
+/* Mega menú — solo existe junto con el nav horizontal: los botones que lo abren
+   viven dentro de .main-nav. Con visibility:hidden se seguía maquetando a todo
+   ancho y su grilla de 3 columnas fijas desbordaba hasta 141px a 320. Mismo
+   patrón de conmutación que .main-nav (L189-190) y .nav-toggle (L253-254). */
 .mega {
+  display: none;
   position: absolute; top: calc(var(--header-h) - 8px); left: 50%; transform: translateX(-50%) translateY(10px);
-  width: min(920px, calc(100vw - 2rem));
-  background: rgba(23, 24, 28, .96);
+  /* 100vw incluye la scrollbar; el bloque contenedor es .site-header, que es
+     fixed con left:0/right:0 y por lo tanto ya la excluye. 100% es lo correcto. */
+  width: min(920px, calc(100% - 2rem));
+  background: var(--overlay);
   backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--line-strong); border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
@@ -177,6 +284,7 @@ p { color: var(--text-2); }
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
 }
+@media (min-width: 1024px) { .mega { display: block; } }
 .mega.is-open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(-50%) translateY(0); }
 .mega-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
 .mega-item {
@@ -184,10 +292,10 @@ p { color: var(--text-2); }
   padding: .95rem 1.05rem; border-radius: var(--radius);
   transition: background .25s;
 }
-.mega-item:hover { background: rgba(255, 255, 255, .05); }
+.mega-item:hover { background: var(--navy-dim); }
 .mega-item strong { font-family: var(--font-display); font-weight: 600; font-size: .98rem; }
 .mega-item span { font-size: .8rem; color: var(--text-3); line-height: 1.45; }
-.mega-item .count { color: var(--accent); font-size: .74rem; font-weight: 600; letter-spacing: .06em; }
+.mega-item .count { color: var(--accent-2); font-size: .74rem; font-weight: 600; letter-spacing: .06em; }
 .mega-footer {
   margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--line);
   display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
@@ -199,7 +307,7 @@ p { color: var(--text-2); }
 @media (min-width: 1024px) { .nav-toggle { display: none; } }
 .mobile-nav {
   position: fixed; inset: var(--header-h) 0 0 0; z-index: 110;
-  background: rgba(13, 14, 16, .97); backdrop-filter: blur(20px);
+  background: var(--overlay); backdrop-filter: blur(20px);
   padding: 1.6rem clamp(1.25rem, 5vw, 2.5rem) 7rem;
   overflow-y: auto;
   opacity: 0; visibility: hidden; transform: translateY(-8px);
@@ -214,10 +322,11 @@ p { color: var(--text-2); }
 .mobile-nav-sub { display: none; padding-top: .8rem; }
 .mobile-nav-group.is-open .mobile-nav-sub { display: block; }
 .mobile-nav-sub a { display: block; padding: .45rem 0; color: var(--text-2); font-size: .98rem; }
-.mobile-nav-sub a:hover { color: var(--accent); }
+.mobile-nav-sub a:hover { color: var(--accent-2); }
 
 /* ---------- Botones ---------- */
 .btn {
+  position: relative; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
   padding: .85rem 1.7rem; border-radius: 999px;
   font-family: var(--font-display); font-weight: 600; font-size: .95rem; letter-spacing: .01em;
@@ -225,10 +334,23 @@ p { color: var(--text-2); }
   border: 1px solid transparent; white-space: nowrap;
 }
 .btn:active { transform: scale(.97); }
-.btn--primary { background: var(--accent); color: #17130C; }
-.btn--primary:hover { background: var(--accent-2); box-shadow: 0 8px 28px rgba(201, 162, 107, .3); transform: translateY(-1px); }
-.btn--ghost { border-color: var(--line-strong); color: var(--text); }
-.btn--ghost:hover { border-color: var(--accent); color: var(--accent-2); transform: translateY(-1px); }
+.btn--primary { background: linear-gradient(160deg, var(--accent-lite), var(--accent)); color: var(--ink-on-accent); }
+.btn--primary::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .35) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform .55s var(--ease);
+}
+.btn--primary:hover::after { transform: translateX(120%); }
+.btn--primary:hover {
+  box-shadow: 0 4px 12px rgba(201, 162, 107, .30), 0 10px 26px rgba(20, 33, 66, .10);
+  transform: translateY(-2px);
+}
+.btn--ghost { border-color: var(--line-input); color: var(--text); }
+.btn--ghost:hover {
+  border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-2px);
+  background: rgba(201, 162, 107, .06); box-shadow: var(--shadow-sm);
+}
 .btn--dark { background: var(--panel-2); color: var(--text); border-color: var(--line); }
 .btn--dark:hover { border-color: var(--line-strong); transform: translateY(-1px); }
 .btn--sm { padding: .55rem 1.15rem; font-size: .85rem; }
@@ -240,7 +362,7 @@ p { color: var(--text-2); }
 
 .text-link {
   display: inline-flex; align-items: center; gap: .45rem;
-  color: var(--accent); font-weight: 600; font-size: .95rem;
+  color: var(--accent-2); font-weight: 600; font-size: .95rem;
   transition: gap .25s var(--ease), color .25s;
 }
 .text-link:hover { gap: .75rem; color: var(--accent-2); }
@@ -252,31 +374,39 @@ p { color: var(--text-2); }
   font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
   background: var(--accent-dim); color: var(--accent-2); border: 1px solid rgba(201, 162, 107, .25);
 }
-.badge--neutral { background: rgba(255, 255, 255, .06); color: var(--text-2); border-color: var(--line); }
-.badge--ok { background: rgba(127, 198, 164, .12); color: var(--ok); border-color: rgba(127, 198, 164, .3); }
+.badge--neutral { background: var(--hover-tint); color: var(--text-2); border-color: var(--line); }
+.badge--ok { background: var(--ok-dim); color: var(--ok); border-color: var(--ok-line); }
 
 .chip {
   display: inline-flex; align-items: center; gap: .45rem;
-  padding: .5rem 1.05rem; border-radius: 999px; border: 1px solid var(--line-strong);
+  padding: .5rem 1.05rem; border-radius: 999px; border: 1px solid var(--line-input);
   font-size: .88rem; font-weight: 500; color: var(--text-2);
   transition: all .25s var(--ease); cursor: pointer;
 }
-.chip:hover { border-color: var(--accent); color: var(--text); }
-.chip.is-active { background: var(--accent); border-color: var(--accent); color: #17130C; font-weight: 600; }
+.chip:hover { border-color: var(--accent-2); color: var(--text); }
+.chip.is-active { background: var(--accent); border-color: var(--accent); color: var(--ink-on-accent); font-weight: 600; }
 .chip .chip-count { font-size: .74rem; opacity: .7; }
 
 /* ---------- Hero ---------- */
 .hero {
-  position: relative; min-height: calc(100svh - 0px);
+  position: relative; min-height: 100svh;
   display: flex; align-items: center; overflow: hidden;
   padding: calc(var(--header-h) + 3rem) 0 4rem;
+}
+/* En teléfono horizontal (~740×380) medido: el hero llegaba a 1453px de alto,
+   3.8 pantallas de scroll antes del siguiente bloque. min-height no era la
+   causa — el contenido ya la superaba — sino .hero-visual, que a ese ancho de
+   columna única escala a ~770px con aspect-ratio 4/4.4. Se achata por debajo
+   de 980, que es donde .hero-grid deja de ser 2 columnas (L377). */
+@media (max-height: 560px) and (orientation: landscape) {
+  .hero { min-height: auto; padding-top: calc(var(--header-h) + 1.25rem); padding-bottom: 1.5rem; }
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: -1;
   background:
-    radial-gradient(1200px 700px at 78% 20%, rgba(201, 162, 107, .13), transparent 55%),
-    radial-gradient(800px 500px at 15% 85%, rgba(94, 116, 128, .12), transparent 60%),
-    linear-gradient(180deg, #0D0E10 0%, #101114 100%);
+    radial-gradient(1200px 700px at 78% 20%, rgba(201, 162, 107, .10), transparent 55%),
+    radial-gradient(800px 500px at 15% 85%, rgba(20, 33, 66, .07), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
 }
 .hero-grid {
   display: grid; gap: clamp(2.5rem, 5vw, 4.5rem); align-items: center;
@@ -284,48 +414,76 @@ p { color: var(--text-2); }
 }
 @media (min-width: 980px) { .hero-grid { grid-template-columns: 1.05fr .95fr; } }
 .hero h1 { margin: 0 0 1.4rem; }
-.hero h1 em { font-style: normal; color: var(--accent); }
+/* El gradiente bronce con background-clip:text no llega a AA sobre fondo claro
+   (#C9A26B da 2.37). Navy sólido + regla bronce: contraste 15.84 y el bronce
+   queda como firma de marca, no como relleno tipográfico. */
+.hero h1 em {
+  font-style: normal;
+  color: var(--navy);
+  box-shadow: inset 0 -.09em 0 var(--accent);
+}
 .hero .lead { margin-bottom: 2.4rem; }
 .hero-ctas { display: flex; gap: .9rem; flex-wrap: wrap; margin-bottom: 3rem; }
-.hero-stats { display: flex; gap: clamp(1.5rem, 4vw, 3rem); flex-wrap: wrap; }
+.hero-stats { display: flex; gap: 1rem; flex-wrap: wrap; }
+.hero-stat {
+  padding: .8rem 1.2rem; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
 .hero-stat strong {
   display: block; font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; color: var(--text);
 }
 .hero-stat span { font-size: .82rem; color: var(--text-3); letter-spacing: .04em; }
 
+/* Entrada al cargar (hero + page-hero) */
+@keyframes riseIn { from { opacity: 0; transform: translateY(28px); } }
+.hero .eyebrow, .hero h1, .hero .lead, .hero .hero-ctas, .hero .hero-stats,
+.page-hero .breadcrumb, .page-hero .eyebrow, .page-hero h1, .page-hero .lead {
+  animation: riseIn .85s var(--ease) both;
+}
+.hero h1, .page-hero h1 { animation-delay: .08s; }
+.hero .lead, .page-hero .lead { animation-delay: .16s; }
+.hero .hero-ctas { animation-delay: .24s; }
+.hero .hero-stats { animation-delay: .32s; }
+.hero-visual { animation: riseIn 1s var(--ease) .2s both; }
+
 /* Panel visual del hero: la placa */
 .hero-visual { position: relative; aspect-ratio: 4 / 4.4; max-height: 640px; }
+@media (max-width: 979px) { .hero-visual { aspect-ratio: 16 / 10; max-height: 360px; } }
+@media (max-height: 560px) and (orientation: landscape) { .hero-visual { max-height: 220px; } }
 .hero-slab {
   position: absolute; border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   transition: transform .6s var(--ease);
 }
+/* Composición invertida: la placa protagonista pasa a ser la oscura sobre fondo
+   claro. Misma estructura y mismas animaciones que la versión oscura. */
 .hero-slab--main {
   inset: 6% 10% 14% 0;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, .9) 0%, rgba(240, 238, 232, 1) 35%, rgba(222, 219, 210, 1) 100%);
+  background: linear-gradient(155deg, var(--navy-2) 0%, var(--navy) 55%, var(--navy-3) 100%);
   animation: slabFloat 9s ease-in-out infinite;
 }
 .hero-slab--main::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .5) 46%, transparent 60%);
+  background: linear-gradient(115deg, transparent 30%, var(--sheen) 46%, transparent 60%);
   background-size: 260% 100%;
   animation: sheen 7s ease-in-out infinite;
 }
 .hero-slab--accent {
   right: 0; bottom: 0; width: 46%; height: 38%;
-  background: linear-gradient(150deg, #D9C4A5, #C9A26B);
+  background: linear-gradient(150deg, var(--accent-lite), var(--accent));
   animation: slabFloat 9s ease-in-out 1.2s infinite;
 }
-.hero-slab--dark {
+.hero-slab--light {
   left: 6%; bottom: 4%; width: 30%; height: 24%;
-  background: linear-gradient(150deg, #303237, #1D1E22);
+  background: linear-gradient(150deg, var(--bg), var(--bg-3));
+  border: 1px solid var(--line-strong);
   animation: slabFloat 9s ease-in-out 2.1s infinite;
 }
 .hero-visual .caption {
   position: absolute; left: 4%; top: 12%;
-  background: rgba(13, 14, 16, .82); backdrop-filter: blur(10px);
-  border: 1px solid var(--line-strong); border-radius: var(--radius);
+  background: var(--glass-bg-strong); backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius);
   padding: .8rem 1.1rem; font-size: .8rem; color: var(--text-2);
   box-shadow: var(--shadow-md);
 }
@@ -340,7 +498,7 @@ p { color: var(--text-2); }
 }
 .scroll-hint::after {
   content: ''; width: 1px; height: 34px;
-  background: linear-gradient(180deg, var(--accent), transparent);
+  background: linear-gradient(180deg, var(--navy), var(--accent) 45%, transparent);
   animation: scrollPulse 2s ease-in-out infinite;
 }
 @keyframes scrollPulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
@@ -352,7 +510,10 @@ p { color: var(--text-2); }
   overflow: hidden;
   transition: transform .35s var(--ease), border-color .35s, box-shadow .35s;
 }
-.card:hover { transform: translateY(-5px); border-color: var(--line-strong); box-shadow: var(--shadow-md); }
+.card:hover {
+  transform: translateY(-6px); border-color: rgba(201, 162, 107, .28);
+  box-shadow: var(--shadow-md), 0 0 0 1px rgba(201, 162, 107, .22);
+}
 
 /* Value props */
 .props-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
@@ -360,10 +521,44 @@ p { color: var(--text-2); }
 .prop-card .prop-icon {
   width: 52px; height: 52px; border-radius: var(--radius);
   display: flex; align-items: center; justify-content: center;
-  background: var(--accent-dim); color: var(--accent); margin-bottom: 1.3rem;
+  background: var(--accent-dim); color: var(--accent-2); margin-bottom: 1.3rem;
 }
 .prop-card h3 { margin-bottom: .55rem; font-size: 1.15rem; }
 .prop-card p { font-size: .92rem; line-height: 1.6; }
+
+/* Bento grid (home) */
+.bento-grid { display: grid; gap: 1.1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .bento-a { grid-column: span 2; }
+}
+/* El salto no era de columnas sino de spans: bento-c/d pasaban de media columna
+   (a 640, implícitas en el grid de 2) a un cuarto de columna de golpe a 980.
+   Se agrega un escalón intermedio donde c/d conservan la mitad (span 6 de 12)
+   hasta 1160 (reusa el corte que dejó libre .btn-quote al moverse a 1240). */
+@media (min-width: 980px) {
+  .bento-grid { grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(160px, auto); }
+  .bento-a { grid-column: span 6; grid-row: span 2; }
+  .bento-b { grid-column: span 6; }
+  .bento-c { grid-column: span 6; }
+  .bento-d { grid-column: span 6; }
+}
+@media (min-width: 1160px) {
+  .bento-c { grid-column: span 3; }
+  .bento-d { grid-column: span 3; }
+}
+.bento-grid .prop-card {
+  background: linear-gradient(165deg, var(--glass-bg-strong), var(--glass-bg));
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.bento-a {
+  display: flex; flex-direction: column; justify-content: flex-end; padding: 2.4rem;
+  background: linear-gradient(150deg, var(--navy-dim), rgba(20, 33, 66, .10) 55%, var(--bg-2));
+  border-color: var(--navy-line);
+}
+.bento-a h3 { font-size: clamp(1.4rem, 2vw, 1.8rem); }
+.bento-a p { font-size: 1rem; max-width: 46ch; }
+.bento-a .prop-icon { width: 64px; height: 64px; margin-bottom: auto; }
 
 /* Category cards */
 .cat-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
@@ -373,14 +568,14 @@ p { color: var(--text-2); }
 .cat-card:hover .cat-visual svg { transform: scale(1.05); }
 .cat-card .cat-body { padding: 1.35rem 1.45rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
 .cat-card h3 { font-size: 1.18rem; margin-bottom: .35rem; }
-.cat-card .cat-count { font-size: .78rem; color: var(--accent); font-weight: 600; letter-spacing: .08em; margin-bottom: .6rem; }
+.cat-card .cat-count { font-size: .78rem; color: var(--accent-2); font-weight: 600; letter-spacing: .08em; margin-bottom: .6rem; }
 .cat-card p { font-size: .86rem; flex: 1; }
 .cat-card .text-link { margin-top: 1rem; font-size: .88rem; }
 
 /* Product cards */
 .prod-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); }
 .prod-card { display: flex; flex-direction: column; position: relative; }
-.prod-card .prod-visual { aspect-ratio: 4 / 3; position: relative; overflow: hidden; background: #202127; }
+.prod-card .prod-visual { aspect-ratio: 4 / 3; position: relative; overflow: hidden; background: var(--surface-ph); }
 .prod-card .prod-visual svg { width: 100%; height: 100%; transition: transform .5s var(--ease); }
 .prod-card:hover .prod-visual svg { transform: scale(1.045); }
 .prod-card .prod-flag { position: absolute; top: .9rem; left: .9rem; z-index: 2; }
@@ -393,9 +588,9 @@ p { color: var(--text-2); }
 }
 .prod-card .prod-price { font-family: var(--font-display); font-weight: 700; font-size: 1.12rem; color: var(--text); }
 .prod-card .prod-price small { display: block; font-size: .68rem; font-weight: 500; color: var(--text-3); letter-spacing: .05em; }
-.prod-card .prod-quote { font-size: .85rem; color: var(--accent); font-weight: 600; }
+.prod-card .prod-quote { font-size: .85rem; color: var(--accent-2); font-weight: 600; }
 .prod-card .prod-colors { display: flex; gap: .3rem; }
-.prod-card .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .25); }
+.prod-card .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line-strong); }
 
 /* Project cards */
 .proj-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
@@ -412,7 +607,7 @@ p { color: var(--text-2); }
 .proj-card .proj-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .8rem; }
 .proj-card .proj-tags span {
   font-size: .7rem; padding: .22rem .6rem; border-radius: 999px;
-  background: rgba(255, 255, 255, .05); border: 1px solid var(--line); color: var(--text-3);
+  background: var(--hover-tint); border: 1px solid var(--line); color: var(--text-3);
 }
 
 /* ---------- Swatches (biblioteca de colores) ---------- */
@@ -421,16 +616,18 @@ p { color: var(--text-2); }
 .swatch-chip {
   position: relative; display: block; aspect-ratio: 1; border-radius: 50%;
   width: min(88px, 100%); margin-inline: auto;
-  border: 1px solid rgba(255, 255, 255, .12);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, .12), 0 4px 14px rgba(0, 0, 0, .3);
+  border: 1px solid var(--line-strong);
+  box-shadow: inset 0 2px 10px rgba(20, 33, 66, .07), 0 4px 14px rgba(20, 33, 66, .10);
   transition: transform .3s var(--ease), box-shadow .3s;
   cursor: pointer;
 }
-.swatch-chip:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 12px 28px rgba(0, 0, 0, .45); }
+.swatch-chip:hover { transform: translateY(-4px) scale(1.03); box-shadow: 0 12px 28px rgba(20, 33, 66, .16), 0 0 0 3px var(--accent-dim); }
 .swatch-chip.is-texture::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
-  background: repeating-conic-gradient(rgba(255,255,255,.015) 0% .25%, transparent .25% .5%);
-  mix-blend-mode: overlay;
+  /* overlay con blanco era invisible sobre swatches claros (la mayoría del catálogo);
+     multiply con negro a alpha baja funciona en todo el rango de color de producto */
+  background: repeating-conic-gradient(rgba(0,0,0,.045) 0% .25%, transparent .25% .5%);
+  mix-blend-mode: multiply;
 }
 .swatch-name { display: block; margin-top: .55rem; font-size: .82rem; font-weight: 500; color: var(--text-2); }
 .swatch-serie { display: block; font-size: .68rem; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase; }
@@ -439,16 +636,16 @@ p { color: var(--text-2); }
 .color-picker { display: flex; flex-wrap: wrap; gap: .55rem; }
 .color-opt {
   position: relative; width: 44px; height: 44px; border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, .16); cursor: pointer; padding: 0;
+  border: 2px solid var(--line-input); cursor: pointer; padding: 0;
   transition: transform .25s var(--ease), border-color .25s, box-shadow .25s;
 }
 .color-opt:hover { transform: scale(1.1); }
-.color-opt.is-selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim), 0 4px 12px rgba(0,0,0,.4); }
+.color-opt.is-selected { border-color: var(--accent-2); box-shadow: 0 0 0 3px var(--accent-dim), 0 4px 12px rgba(20, 33, 66, .16); }
 .color-opt.is-pedido { opacity: .38; }
 .color-opt.is-pedido:hover { opacity: .7; }
 .color-opt .tick {
   position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
-  color: #17130C; font-weight: 800; font-size: .9rem;
+  color: var(--ink-on-accent); font-weight: 800; font-size: .9rem;
   text-shadow: 0 0 6px rgba(255,255,255,.7);
 }
 .color-opt.is-selected .tick { display: flex; }
@@ -478,14 +675,14 @@ p { color: var(--text-2); }
 /* ---------- Formularios ---------- */
 .field { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1.15rem; }
 .field label { font-size: .85rem; font-weight: 600; color: var(--text-2); }
-.field label .req { color: var(--accent); }
+.field label .req { color: var(--accent-2); }
 .field input, .field select, .field textarea {
-  background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--bg); border: 1px solid var(--line-input); border-radius: var(--radius-sm);
   padding: .8rem 1rem; color: var(--text); width: 100%;
   transition: border-color .25s, box-shadow .25s;
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim);
+  outline: none; border-color: var(--accent-2); box-shadow: 0 0 0 3px var(--accent-dim);
 }
 .field textarea { resize: vertical; min-height: 110px; }
 .field .hint { font-size: .76rem; color: var(--text-3); }
@@ -495,7 +692,7 @@ p { color: var(--text-2); }
 .form-row { display: grid; gap: 0 1rem; grid-template-columns: 1fr; }
 @media (min-width: 640px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B9B7B0' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.6rem !important; }
+select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A5163' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.6rem !important; }
 
 /* ---------- Accordion (FAQ) ---------- */
 .accordion { border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
@@ -506,14 +703,14 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--text);
   transition: background .25s;
 }
-.acc-trigger:hover { background: rgba(255, 255, 255, .03); }
+.acc-trigger:hover { background: var(--hover-tint); }
 .acc-trigger .acc-icon {
   flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
   border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: center;
   transition: transform .3s var(--ease), background .3s, border-color .3s;
   font-size: 1.1rem; font-weight: 400; color: var(--text-2);
 }
-.acc-item.is-open .acc-icon { transform: rotate(45deg); background: var(--accent); border-color: var(--accent); color: #17130C; }
+.acc-item.is-open .acc-icon { transform: rotate(45deg); background: var(--accent); border-color: var(--accent); color: var(--ink-on-accent); }
 .acc-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s var(--ease); }
 .acc-item.is-open .acc-panel { grid-template-rows: 1fr; }
 .acc-panel-inner { overflow: hidden; }
@@ -528,15 +725,15 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   padding: 1.5rem; position: sticky; top: calc(var(--header-h) + 1.2rem);
 }
 .filters h2 { font-size: 1.05rem; margin-bottom: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
-.filters h2 button { font-size: .76rem; color: var(--accent); font-weight: 600; }
+.filters h2 button { font-size: .76rem; color: var(--accent-2); font-weight: 600; }
 .filter-group { padding: 1.05rem 0; border-top: 1px solid var(--line); }
 .filter-group h3 { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); margin-bottom: .8rem; font-weight: 600; }
 .filter-opt { display: flex; align-items: center; gap: .6rem; padding: .32rem 0; cursor: pointer; font-size: .92rem; color: var(--text-2); }
 .filter-opt:hover { color: var(--text); }
-.filter-opt input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+.filter-opt input { accent-color: var(--accent-2); width: 16px; height: 16px; cursor: pointer; }
 .filter-opt .f-count { margin-left: auto; font-size: .74rem; color: var(--text-3); }
 .range-row { display: flex; gap: .6rem; align-items: center; }
-.range-row input { width: 100%; background: var(--bg-2); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); padding: .5rem .7rem; font-size: .88rem; }
+.range-row input { width: 100%; background: var(--bg); border: 1px solid var(--line-input); border-radius: var(--radius-sm); padding: .5rem .7rem; font-size: .88rem; }
 .range-row span { color: var(--text-3); font-size: .8rem; }
 
 .catalog-toolbar {
@@ -562,31 +759,34 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 
 /* ---------- Ficha de producto ---------- */
 .breadcrumb { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; font-size: .82rem; color: var(--text-3); margin-bottom: 1.8rem; }
-.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb a:hover { color: var(--accent-2); }
 .breadcrumb .sep { opacity: .5; }
 .breadcrumb [aria-current] { color: var(--text-2); }
 
 .pdp-grid { display: grid; gap: clamp(2rem, 4vw, 4rem); grid-template-columns: 1fr; }
-@media (min-width: 960px) { .pdp-grid { grid-template-columns: 1.05fr .95fr; } }
+@media (min-width: 980px) { .pdp-grid { grid-template-columns: 1.05fr .95fr; } }
 
 .pdp-gallery { position: sticky; top: calc(var(--header-h) + 1.2rem); }
-@media (max-width: 959px) { .pdp-gallery { position: static; } }
+@media (max-width: 979px) { .pdp-gallery { position: static; } }
 .pdp-main-img {
   aspect-ratio: 4 / 3.2; border-radius: var(--radius-lg); overflow: hidden;
-  border: 1px solid var(--line); background: #202127; margin-bottom: .8rem;
+  border: 1px solid var(--line); background: var(--surface-ph); margin-bottom: .8rem;
 }
 .pdp-main-img svg { width: 100%; height: 100%; }
-.pdp-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+/* La cantidad de vistas es dinámica por producto (producto.js), no siempre 4:
+   con repeat(4,1fr) fijo, a 320px cada thumb medía ~60px. auto-fit reparte
+   el ancho disponible entre los que haya, sin importar cuántos sean. */
+.pdp-thumbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: .8rem; }
 .pdp-thumb {
   aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden;
-  border: 1px solid var(--line); background: #202127; cursor: pointer; padding: 0;
+  border: 1px solid var(--line); background: var(--surface-ph); cursor: pointer; padding: 0;
   transition: border-color .25s, transform .25s;
 }
 .pdp-thumb:hover { transform: translateY(-2px); }
-.pdp-thumb.is-active { border-color: var(--accent); }
+.pdp-thumb.is-active { border-color: var(--accent-2); }
 .pdp-thumb svg { width: 100%; height: 100%; }
 
-.pdp-info .prod-code { font-size: .78rem; letter-spacing: .16em; color: var(--accent); text-transform: uppercase; font-weight: 600; }
+.pdp-info .prod-code { font-size: .78rem; letter-spacing: .16em; color: var(--accent-2); text-transform: uppercase; font-weight: 600; }
 .pdp-info h1 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin: .5rem 0 1rem; }
 .pdp-desc { margin-bottom: 1.8rem; }
 .pdp-price { font-family: var(--font-display); font-size: 2rem; font-weight: 700; margin-bottom: .3rem; }
@@ -602,10 +802,10 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 
 .qty-row { display: flex; gap: .9rem; align-items: stretch; flex-wrap: wrap; }
 .qty-stepper {
-  display: inline-flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 999px; overflow: hidden;
+  display: inline-flex; align-items: center; border: 1px solid var(--line-input); border-radius: 999px; overflow: hidden;
 }
 .qty-stepper button { width: 46px; height: 50px; font-size: 1.2rem; color: var(--text-2); transition: color .2s, background .2s; }
-.qty-stepper button:hover { color: var(--text); background: rgba(255,255,255,.05); }
+.qty-stepper button:hover { color: var(--text); background: var(--hover-tint); }
 .qty-stepper input {
   width: 52px; text-align: center; background: none; border: none;
   font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
@@ -614,7 +814,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 
 .trust-list { display: grid; gap: .55rem; font-size: .88rem; color: var(--text-2); }
 .trust-list li { display: flex; gap: .65rem; align-items: flex-start; }
-.trust-list svg { flex-shrink: 0; margin-top: .2rem; color: var(--accent); }
+.trust-list svg { flex-shrink: 0; margin-top: .2rem; color: var(--accent-2); }
 
 /* ---------- Series / grupos en biblioteca ---------- */
 .grupo-band {
@@ -638,17 +838,20 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   padding: 1.3rem; align-items: start;
 }
 .quote-item + .quote-item { border-top: 1px solid var(--line); }
-.quote-item .qi-visual { width: 96px; height: 78px; border-radius: var(--radius-sm); overflow: hidden; background: #202127; border: 1px solid var(--line); }
+.quote-item .qi-visual { width: 96px; height: 78px; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-ph); border: 1px solid var(--line); }
 .quote-item .qi-visual svg { width: 100%; height: 100%; }
 .quote-item h3 { font-size: 1rem; }
 .quote-item .qi-meta { font-size: .8rem; color: var(--text-3); margin: .15rem 0 .5rem; }
-.quote-item .qi-obs { font-size: .8rem; color: var(--text-2); background: rgba(255,255,255,.04); border-radius: var(--radius-sm); padding: .45rem .7rem; margin-top: .5rem; }
+.quote-item .qi-obs { font-size: .8rem; color: var(--text-2); background: var(--bg-2); border-radius: var(--radius-sm); padding: .45rem .7rem; margin-top: .5rem; }
 .quote-item .qi-obs strong { color: var(--text-3); font-weight: 600; }
 .quote-item .qi-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .6rem; }
 .quote-item .qi-price { font-family: var(--font-display); font-weight: 700; }
 .quote-item .qi-remove { font-size: .78rem; color: var(--text-3); transition: color .2s; }
 .quote-item .qi-remove:hover { color: var(--danger); }
-@media (max-width: 620px) {
+/* 639 y no 620: es el límite exacto de --bp-sm (640), no un corte propio.
+   Antes dejaba una franja de 621-639 en modo compacto sin que ninguna otra
+   grilla del sitio hubiera pasado a su layout ancho todavía. */
+@media (max-width: 639px) {
   .quote-item { grid-template-columns: 72px 1fr; }
   .quote-item .qi-actions { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
 }
@@ -669,15 +872,15 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 }
 .steps .step.is-active { color: var(--accent-2); border-color: rgba(201, 162, 107, .4); background: var(--accent-dim); font-weight: 600; }
 .steps .step .n {
-  width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.08);
+  width: 20px; height: 20px; border-radius: 50%; background: var(--hover-tint);
   display: inline-flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700;
 }
-.steps .step.is-active .n { background: var(--accent); color: #17130C; }
+.steps .step.is-active .n { background: var(--accent); color: var(--ink-on-accent); }
 
 .confirm-panel { text-align: center; max-width: 560px; margin: 0 auto; padding: 3.5rem 1.5rem; }
 .confirm-panel .confirm-icon {
   width: 84px; height: 84px; margin: 0 auto 1.6rem; border-radius: 50%;
-  background: rgba(127, 198, 164, .12); border: 1px solid rgba(127, 198, 164, .35);
+  background: var(--ok-dim); border: 1px solid var(--ok-line);
   display: flex; align-items: center; justify-content: center; color: var(--ok);
 }
 .confirm-panel h2 { margin-bottom: .8rem; }
@@ -685,7 +888,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 
 /* ---------- Modal ---------- */
 .modal-backdrop {
-  position: fixed; inset: 0; z-index: 200; background: rgba(8, 9, 10, .72);
+  position: fixed; inset: 0; z-index: 200; background: var(--scrim);
   backdrop-filter: blur(6px);
   display: none; align-items: center; justify-content: center; padding: 1.2rem;
 }
@@ -717,16 +920,18 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius);
   padding: 1rem 1.3rem; box-shadow: var(--shadow-lg);
   transform: translateY(20px); opacity: 0; visibility: hidden;
-  transition: all .35s var(--ease); max-width: min(360px, calc(100vw - 2.8rem));
+  /* 100vw incluye la scrollbar; el toast es fixed y su bloque contenedor ya la
+     excluye, así que 100% es la unidad correcta. */
+  transition: all .35s var(--ease); max-width: min(360px, calc(100% - 2.8rem));
 }
 .toast.is-visible { transform: none; opacity: 1; visibility: visible; }
 .toast .toast-icon { color: var(--ok); flex-shrink: 0; }
 .toast p { font-size: .88rem; color: var(--text); }
-.toast a { color: var(--accent); font-weight: 600; white-space: nowrap; font-size: .85rem; }
+.toast a { color: var(--accent-2); font-weight: 600; white-space: nowrap; font-size: .85rem; }
 
 /* ---------- Buscador ---------- */
 .search-overlay {
-  position: fixed; inset: 0; z-index: 220; background: rgba(8, 9, 10, .8); backdrop-filter: blur(10px);
+  position: fixed; inset: 0; z-index: 220; background: var(--scrim); backdrop-filter: blur(10px);
   display: none; padding: min(14vh, 130px) 1.2rem 2rem; overflow-y: auto;
 }
 .search-overlay.is-open { display: block; animation: fadeIn .25s var(--ease); }
@@ -734,10 +939,10 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .search-input-wrap { position: relative; margin-bottom: 1rem; }
 .search-input-wrap svg { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: var(--text-3); }
 .search-input {
-  width: 100%; background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius-lg);
+  width: 100%; background: var(--panel); border: 1px solid var(--line-input); border-radius: var(--radius-lg);
   padding: 1.15rem 3.4rem; font-size: 1.05rem; box-shadow: var(--shadow-lg);
 }
-.search-input:focus { outline: none; border-color: var(--accent); }
+.search-input:focus { outline: none; border-color: var(--accent-2); }
 .search-kbd {
   position: absolute; right: 1.1rem; top: 50%; transform: translateY(-50%);
   font-size: .7rem; color: var(--text-3); border: 1px solid var(--line-strong); border-radius: 6px; padding: .15rem .5rem;
@@ -748,7 +953,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
   transition: border-color .2s, transform .2s;
 }
-.search-result:hover { border-color: var(--accent); transform: translateX(3px); }
+.search-result:hover { border-color: var(--accent-2); transform: translateX(3px); }
 .search-result .sr-dot { width: 34px; height: 34px; border-radius: var(--radius-sm); flex-shrink: 0; border: 1px solid var(--line-strong); }
 .search-result strong { display: block; font-size: .95rem; }
 .search-result span { font-size: .78rem; color: var(--text-3); }
@@ -760,17 +965,23 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   position: relative; border-radius: var(--radius-lg); overflow: hidden;
   padding: clamp(2.5rem, 6vw, 4.5rem); text-align: center;
   background:
-    radial-gradient(600px 300px at 50% 0%, rgba(201, 162, 107, .16), transparent 70%),
+    radial-gradient(640px 320px at 50% -10%, rgba(201, 162, 107, .10), transparent 70%),
     linear-gradient(180deg, var(--panel), var(--bg-3));
   border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-lg);
 }
 .cta-band h2 { max-width: 620px; margin: 0 auto 1rem; }
 .cta-band p { max-width: 520px; margin: 0 auto 2rem; }
 .cta-band .hero-ctas { justify-content: center; margin-bottom: 0; }
 
 /* ---------- Instagram ---------- */
+/* Son exactamente 6 tiles fijos (main.js, array igItems). El salto directo de
+   2 a 6 columnas a 720px dejaba tiles de ~110px. 2→3→6 son todos divisores de
+   6 (nunca una fila huérfana) y reusa los cortes de 640 y 980 que ya existen
+   en el archivo (bento-grid, hero-grid) en vez de sumar un breakpoint más. */
 .ig-grid { display: grid; gap: .8rem; grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 720px) { .ig-grid { grid-template-columns: repeat(6, 1fr); } }
+@media (min-width: 640px) { .ig-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 980px) { .ig-grid { grid-template-columns: repeat(6, 1fr); } }
 .ig-tile {
   position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
   border: 1px solid var(--line); display: block;
@@ -779,19 +990,27 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .ig-tile:hover svg { transform: scale(1.06); }
 .ig-tile::after {
   content: '↗'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(13, 14, 16, .55); color: var(--text); font-size: 1.4rem;
+  background: var(--scrim); color: #FFFFFF; font-size: 1.4rem;
   opacity: 0; transition: opacity .3s;
 }
 .ig-tile:hover::after { opacity: 1; }
 
 /* ---------- Footer ---------- */
-.site-footer { border-top: 1px solid var(--line); background: var(--bg-2); margin-top: clamp(3rem, 7vw, 6rem); }
+/* La regla navy de 2px es el cierre visual de la página: sin ella el footer
+   claro se disuelve en el fondo. Ver "Reconciliación" en el plan. */
+.site-footer { border-top: 2px solid var(--navy); background: linear-gradient(180deg, var(--bg-2), var(--bg-3)); margin-top: clamp(3rem, 7vw, 6rem); }
+/* Son 4 hijos fijos (footer-brand + 3 footer-col, main.js). El salto de 1 a
+   4 columnas a 760px dejaba columnas de ~140px. El paso de 2 columnas a 640
+   (reusa el corte de .bento-grid) da ~280px por celda; las 4 columnas finales
+   se difieren a 920 (reusa el corte de .split) en vez de sumar otro número. */
 .footer-grid {
   display: grid; gap: 2.5rem; padding: clamp(3rem, 6vw, 4.5rem) 0 3rem;
   grid-template-columns: 1fr;
 }
-@media (min-width: 760px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; } }
+@media (min-width: 640px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 920px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1.2fr; } }
 .footer-brand p { font-size: .88rem; margin-top: 1rem; max-width: 34ch; }
+.footer-logo { height: 58px; width: auto; margin-bottom: .4rem; opacity: 1; }
 .footer-col h3 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 1.1rem; font-weight: 600; }
 .footer-col ul { display: grid; gap: .5rem; }
 .footer-col a { font-size: .92rem; color: var(--text-2); transition: color .2s; }
@@ -804,7 +1023,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   display: flex; align-items: center; justify-content: center; color: var(--text-2);
   transition: all .25s;
 }
-.footer-social a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+.footer-social a:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-2px); }
 .footer-bottom {
   border-top: 1px solid var(--line); padding: 1.4rem 0;
   display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
@@ -818,9 +1037,13 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   background: #1FA855; color: #fff;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 10px 30px rgba(31, 168, 85, .4);
-  transition: transform .3s var(--ease), box-shadow .3s;
+  transition: transform .3s var(--ease), box-shadow .3s, opacity .25s var(--ease);
 }
 .wa-fab:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 14px 36px rgba(31, 168, 85, .55); }
+/* Oculto mientras un botón de WhatsApp a todo el ancho (mismo destino, misma
+   esquina) está a la vista — ver el IntersectionObserver en main.js. Opacity
+   y no display:none: mantiene la transición suave y no interrumpe waPulse. */
+.wa-fab.is-hidden { opacity: 0; pointer-events: none; }
 .wa-fab::before {
   content: ''; position: absolute; inset: -5px; border-radius: 50%;
   border: 1px solid rgba(31, 168, 85, .5); animation: waPulse 2.4s ease-out infinite;
@@ -833,7 +1056,9 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .page-hero .lead { margin-bottom: 0; }
 
 /* ---------- Reveal on scroll ---------- */
-.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.reveal--left { transform: translateX(-36px); }
+.reveal--right { transform: translateX(36px); }
 .reveal.is-visible { opacity: 1; transform: none; }
 .reveal-stagger > * { opacity: 0; transform: translateY(26px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
 .reveal-stagger.is-visible > * { opacity: 1; transform: none; }
@@ -857,7 +1082,7 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .split-content p + p { margin-top: .9rem; }
 .split-content ul { margin-top: 1.3rem; display: grid; gap: .7rem; }
 .split-content ul li { display: flex; gap: .7rem; align-items: flex-start; color: var(--text-2); font-size: .95rem; }
-.split-content ul svg { flex-shrink: 0; margin-top: .25rem; color: var(--accent); }
+.split-content ul svg { flex-shrink: 0; margin-top: .25rem; color: var(--accent-2); }
 
 /* Atributos grid (12) */
 .attr-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); }
@@ -865,18 +1090,58 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
   padding: 1.3rem 1.4rem; border-radius: var(--radius); background: var(--bg-3); border: 1px solid var(--line);
   transition: border-color .3s, transform .3s var(--ease);
 }
-.attr-card:hover { border-color: rgba(201, 162, 107, .4); transform: translateY(-3px); }
-.attr-card .attr-icon { color: var(--accent); margin-bottom: .8rem; }
+.attr-card:hover { border-color: rgba(201, 162, 107, .4); transform: translateY(-3px); box-shadow: var(--glow-accent); }
+.attr-card .attr-icon { color: var(--accent-2); margin-bottom: .8rem; }
 .attr-card h3 { font-size: .98rem; margin-bottom: .3rem; }
 .attr-card p { font-size: .82rem; line-height: 1.55; }
 
 /* Stats band */
 .stats-band { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-.stat-card { text-align: center; padding: 2rem 1.4rem; }
-.stat-card strong { display: block; font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; color: var(--accent); margin-bottom: .3rem; }
+.stat-card {
+  text-align: center; padding: 2rem 1.4rem;
+  background: linear-gradient(160deg, var(--navy-dim), var(--glass-bg));
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.stat-card strong {
+  display: block; font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; margin-bottom: .3rem;
+  color: var(--navy);
+}
+.stat-card strong::after {
+  content: ''; display: block; width: 28px; height: 2px;
+  margin: .4rem auto 0; background: var(--accent);
+}
 .stat-card span { font-size: .86rem; color: var(--text-2); }
 
+/* ---------- Skeletons de carga ---------- */
+.sk {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  /* En claro --panel y --panel-2 son casi idénticos: la animación desaparecía.
+     Se usan --bg-3 y --bg para recuperar el barrido. */
+  background: linear-gradient(100deg, var(--bg-3) 35%, var(--bg) 48%, var(--bg-3) 61%);
+  background-size: 200% 100%;
+  animation: skPulse 1.5s ease-in-out infinite;
+}
+@keyframes skPulse { from { background-position: 120% 0; } to { background-position: -80% 0; } }
+.sk--cat { min-height: 300px; }
+.sk--prod { min-height: 360px; }
+.sk--proj { min-height: 330px; }
+.sk--swatch { aspect-ratio: 1; border-radius: 50%; width: min(88px, 100%); margin-inline: auto; }
+.sk--ig { aspect-ratio: 1; border-radius: var(--radius); }
+
 /* ---------- Utilidades ---------- */
+.section--aurora { position: relative; }
+.section--aurora::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+  background:
+    radial-gradient(560px 320px at 15% 20%, var(--navy-glow), transparent 70%),
+    radial-gradient(640px 360px at 85% 80%, rgba(201, 162, 107, .06), transparent 70%);
+}
+.glass {
+  background: linear-gradient(165deg, var(--glass-bg-strong), var(--glass-bg));
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
 .mt-1 { margin-top: .6rem; } .mt-2 { margin-top: 1.2rem; } .mt-3 { margin-top: 2rem; } .mt-4 { margin-top: 3rem; }
 .mb-2 { margin-bottom: 1.2rem; } .mb-3 { margin-bottom: 2rem; }
 .text-center { text-align: center; }
@@ -884,4 +1149,20 @@ select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmln
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Objetivos táctiles ---------- */
+/* Un único bloque, solo para punteros gruesos, para no engordar desktop.
+   Medidos con la auditoría responsive (cerebro/auditoria-responsive.md):
+   .icon-btn 42px, .modal-close 38px, .footer-social a 40px, .mobile-nav-sub a
+   40px, .chip 41px, .filter-opt ~36px — los seis por debajo del mínimo de
+   44px de iOS. .color-opt (44px), .qty-stepper button (46×50) y .wa-fab
+   (58px) ya cumplían y no se tocan. */
+@media (pointer: coarse) {
+  .icon-btn { width: 44px; height: 44px; }
+  .modal-close { width: 44px; height: 44px; }
+  .footer-social a { width: 44px; height: 44px; }
+  .mobile-nav-sub a { padding: .6rem 0; }
+  .chip { padding-block: .62rem; }
+  .filter-opt { padding-block: .58rem; }
 }

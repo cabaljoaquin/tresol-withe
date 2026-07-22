@@ -65,7 +65,7 @@
       </div>
       <p style="margin-bottom:1rem;">${esc(p.desc)}</p>
       <div class="proj-tags" style="display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:1.4rem;">
-        ${p.tags.map(t => `<span style="font-size:.72rem; padding:.25rem .65rem; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--line); color:var(--text-3);">${esc(t)}</span>`).join('')}
+        ${p.tags.map(t => `<span style="font-size:.72rem; padding:.25rem .65rem; border-radius:999px; background:var(--hover-tint); border:1px solid var(--line); color:var(--text-3);">${esc(t)}</span>`).join('')}
       </div>
       <p class="muted" style="font-size:.78rem; margin-bottom:1.2rem;">* Imágenes ilustrativas — las fotografías reales del proyecto se administran desde el panel de gestión.</p>
       <div style="display:flex; gap:.7rem; flex-wrap:wrap;">

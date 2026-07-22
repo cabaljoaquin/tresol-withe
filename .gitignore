@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Herramientas locales de desarrollo
+cerebro/
+.agents/
+skills-lock.json
+
+# Logs
+*.log

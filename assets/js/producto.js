@@ -6,7 +6,25 @@
 
 (() => {
   const params = new URLSearchParams(location.search);
-  const p = TRESOL.getProducto(params.get('id')) || TRESOL.productos[0];
+  const rawId = params.get('id');
+  const p = rawId ? TRESOL.getProducto(rawId) : null;
+
+  if (!p) {
+    // El ID no se encontró — esto normalmente ocurre si el servidor
+    // redirige y elimina el query string (?id=...). Verificá serve.json.
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('pdpRoot').innerHTML = `
+        <div style="padding:4rem 1rem; text-align:center; grid-column:1/-1;">
+          <h2 style="margin-bottom:1rem;">Producto no encontrado</h2>
+          <p style="margin-bottom:2rem; color:var(--text-2);">
+            El producto que buscás no existe o el enlace es incorrecto.<br>
+            <code>id=${rawId ?? '(sin id)'} · url=${location.href}</code>
+          </p>
+          <a class="btn btn--primary" href="catalogo.html">Ver catálogo completo</a>
+        </div>`;
+    });
+    return; // sale del IIFE sin ejecutar el resto
+  }
   const cat = TRESOL.categorias.find(c => c.id === p.categoria);
   const sub = cat?.sub.find(s => s.id === p.sub);
   const serie = TRESOL.getSerie(p.serie);
