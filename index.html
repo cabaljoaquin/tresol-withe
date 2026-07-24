@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>document.documentElement.classList.add('js');</script>
   <title>TRESOL® — Superficie Sólida Argentina | Placas, Bachas, Bases de Ducha y Mesadas</title>
   <meta name="description" content="Primera fabricante de superficie sólida en Argentina. Placas, bachas, bases de ducha, tapas de mesa y mesadas a medida. Antibacterial sin biocidas, ignífugo, juntas imperceptibles y 100 % reciclable. ISO 9001.">
   <meta property="og:title" content="TRESOL® — Superficie Sólida Argentina">
@@ -274,11 +275,11 @@
           ${productVisual(TRESOL.getProducto(id), igColors[i], i % 2 ? 'ambiente' : 'main')}
         </a>`).join('');
 
-      // Re-observar reveals inyectados
+      // Re-observar reveals inyectados + entrada de las placas del hero
       const io = new IntersectionObserver(entries => {
         entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
       }, { threshold: 0.1 });
-      document.querySelectorAll('.reveal:not(.is-visible), .reveal-stagger:not(.is-visible)').forEach(el => io.observe(el));
+      document.querySelectorAll('.reveal:not(.is-visible), .reveal-stagger:not(.is-visible), .hero-visual:not(.is-visible)').forEach(el => io.observe(el));
     });
   </script>
 </body>

@@ -12,3 +12,7 @@ skills-lock.json
 
 # Logs
 *.log
+
+# Archivos de trabajo local
+img/
+screenshot-helper.html
